@@ -1,0 +1,106 @@
+<html>
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="raphael-2.1.4.min.js"></script>
+<script src="justgage.js"></script>
+
+<script>
+var accessToken = "821c27db0c85e71f09b26372b4aef9802fbf0a79";
+var deviceID = "0a10aced202194944a04ba38"
+var gradosC = "https://api.particle.io/v1/devices/" + deviceID + "/gradosC";
+var humedad = "https://api.particle.io/v1/devices/" + deviceID + "/humedad";
+var gradosF = "https://api.particle.io/v1/devices/" + deviceID + "/gradosF";
+
+function tempCallback(data, status){
+	if (status == "success") {
+		temp = parseFloat(data.result);
+		temp = temp.toFixed(2);
+		gC.refresh(temp);
+		setTimeout(getReadingC, 1000);
+	}
+	else {
+		alert("There was a problem");
+	}
+}
+
+function getReadingC(){
+   	$.get(gradosC, {access_token: accessToken}, tempCallback);
+}
+
+function humCallback(data, status){
+	if (status == "success") {
+		temp = parseFloat(data.result);
+		temp = temp.toFixed(2);
+		gH.refresh(temp);
+		setTimeout(getReadingH, 1000);
+	}
+	else {
+		alert("There was a problem");
+	}
+}
+
+function getReadingH(){
+   	$.get(humedad, {access_token: accessToken}, humCallback);
+}
+
+function fCallback(data, status){
+	if (status == "success") {
+		temp = parseFloat(data.result);
+		temp = temp.toFixed(2);
+		gF.refresh(temp);
+		setTimeout(getReadingF, 1000);
+	}
+	else {
+		alert("There was a problem");
+	}
+}
+
+function getReadingF(){
+   	$.get(gradosF, {access_token: accessToken}, fCallback);
+}
+
+</script>
+</head>	
+
+<body>
+<div id="gaugeC" class="200x160px"></div>
+
+<script>
+var gC = new JustGage({
+    id: "gaugeC",
+    value: 0,
+    min: 0,
+    max: 400,
+    title: "Temperatura (C)"
+});
+getReadingC();
+</script>
+
+<div></div>
+<div id="gaugeH" class="200x160px"></div>
+
+<script>
+var gH = new JustGage({
+    id: "gaugeH",
+    value: 0,
+    min: 0,
+    max: 100,
+    title: "Humedad"
+});
+getReadingH();
+</script>
+
+<div id="gaugeF" class="200x160px"></div>
+
+<script>
+var gH = new JustGage({
+    id: "gaugeF",
+    value: 0,
+    min: 0,
+    max: 100,
+    title: "Temperatura (F)"
+});
+getReadingF();
+</script>
+</body>
+</html>
