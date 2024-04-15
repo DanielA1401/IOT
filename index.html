@@ -13,9 +13,9 @@ var gradosF = "https://api.particle.io/v1/devices/" + deviceID + "/gradosF";
 
 function tempCallback(data, status){
 	if (status == "success") {
-		temp = parseFloat(data.result);
-		temp = temp.toFixed(2);
-		gC.refresh(temp);
+		var tempC = parseFloat(data.result);
+		tempC = tempC.toFixed(2);
+		gC.refresh(tempC);
 		setTimeout(getReadingC, 1000);
 	}
 	else {
@@ -29,9 +29,9 @@ function getReadingC(){
 
 function humCallback(data, status){
 	if (status == "success") {
-		temp = parseFloat(data.result);
-		temp = temp.toFixed(2);
-		gH.refresh(temp);
+		var hum = parseFloat(data.result);
+		hum = hum.toFixed(2);
+		gH.refresh(hum);
 		setTimeout(getReadingH, 1000);
 	}
 	else {
@@ -45,9 +45,9 @@ function getReadingH(){
 
 function fCallback(data, status){
 	if (status == "success") {
-		temp = parseFloat(data.result);
-		temp = temp.toFixed(2);
-		gF.refresh(temp);
+		var tempF = parseFloat(data.result);
+		tempF = tempF.toFixed(2);
+		gF.refresh(tempF);
 		setTimeout(getReadingF, 1000);
 	}
 	else {
@@ -93,11 +93,11 @@ getReadingH();
 <div id="gaugeF" class="200x160px"></div>
 
 <script>
-var gH = new JustGage({
+var gF = new JustGage({
     id: "gaugeF",
     value: 0,
     min: 0,
-    max: 100,
+    max: 400,
     title: "Temperatura (F)"
 });
 getReadingF();
