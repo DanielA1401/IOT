@@ -1,91 +1,34 @@
+<!DOCTYPE html>
 <html>
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="raphael-2.1.4.min.js"></script>
-<script src="justgage.js"></script>
-
-<script>
-var accessToken = "821c27db0c85e71f09b26372b4aef9802fbf0a79";
-var deviceID = "0a10aced202194944a04ba38"
-var gradosC = "https://api.particle.io/v1/devices/" + deviceID + "/gradosC";
-var humedad = "https://api.particle.io/v1/devices/" + deviceID + "/humedad";
-var gradosF = "https://api.particle.io/v1/devices/" + deviceID + "/gradosF";
-
-function tempCallback(data, status){
-	if (status == "success") {
-		var tempC = parseFloat(data.result);
-		tempC = tempC.toFixed(2);
-		gC.refresh(tempC);
-		setTimeout(getReadingC, 1000);
-	}
-	else {
-		alert("There was a problem");
-	}
-}
-
-function getReadingC(){
-   	$.get(gradosC, {access_token: accessToken}, tempCallback);
-}
-
-function humCallback(data, status){
-	if (status == "success") {
-		var hum = parseFloat(data.result);
-		hum = hum.toFixed(2);
-		gH.refresh(hum);
-		setTimeout(getReadingH, 1000);
-	}
-	else {
-		alert("There was a problem");
-	}
-}
-
-function getReadingH(){
-   	$.get(humedad, {access_token: accessToken}, humCallback);
-}
-
-function fCallback(data, status){
-	if (status == "success") {
-		var tempF = parseFloat(data.result);
-		tempF = tempF.toFixed(2);
-		gF.refresh(tempF);
-		setTimeout(getReadingF, 1000);
-	}
-	else {
-		alert("There was a problem");
-	}
-}
-
-function getReadingF(){
-   	$.get(gradosF, {access_token: accessToken}, fCallback);
-}
-
-</script>
-</head>	
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script src="raphael-2.1.4.min.js"></script>
+  <script src="justgage.js"></script>
+</head>
 <body>
+
 <div id="gaugeC" class="200x160px"></div>
 
 <script>
 var gC = new JustGage({
-    id: "gaugeC",
-    value: 0,
-    min: 0,
-    max: 400,
-    title: "Temperatura (C)"
+  id: "gaugeC",
+  value: 0,
+  min: 0,
+  max: 400,
+  title: "Temperatura (C)"
 });
 getReadingC();
 </script>
 
-<div></div>
 <div id="gaugeH" class="200x160px"></div>
 
 <script>
 var gH = new JustGage({
-    id: "gaugeH",
-    value: 0,
-    min: 0,
-    max: 100,
-    title: "Humedad"
+  id: "gaugeH",
+  value: 0,
+  min: 0,
+  max: 100,
+  title: "Humedad"
 });
 getReadingH();
 </script>
@@ -94,13 +37,56 @@ getReadingH();
 
 <script>
 var gF = new JustGage({
-    id: "gaugeF",
-    value: 0,
-    min: 0,
-    max: 400,
-    title: "Temperatura (F)"
+  id: "gaugeF",
+  value: 0,
+  min: 0,
+  max: 400,
+  title: "Temperatura (F)"
 });
 getReadingF();
 </script>
+
+<button style="background-color: green; color: white; padding: 10px 20px; font-size: 16px; margin: 10px;" onclick="encenderLed()">Encender LED</button>
+<button style="background-color: red; color: white; padding: 10px 20px; font-size: 16px; margin: 10px;" onclick="apagarLed()">Apagar LED</button>
+
+<script>
+var accessToken = "821c27db0c85e71f09b26372b4aef9802fbf0a79";
+var deviceID = "0a10aced202194944a04ba38";
+
+function encenderLed() {
+  fetch("https://api.particle.io/v1/devices/" + deviceID + "/led", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization: "Bearer 821c27db0c85e71f09b26372b4aef9802fbf0a79",
+    },
+    body: "arg=on",
+  })
+  .then((response) => {
+    console.log("LED encendido");
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+  });
+}
+
+function apagarLed() {
+  fetch("https://api.particle.io/v1/devices/" + deviceID + "/led", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization: "Bearer 821c27db0c85e71f09b26372b4aef9802fbf0a79",
+    },
+    body: "arg=off",
+  })
+  .then((response) => {
+    console.log("LED apagado");
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+  });
+}
+</script>
+
 </body>
 </html>
