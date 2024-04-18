@@ -89,6 +89,8 @@ function apagarLed() {
     console.log(data);
     if (data.return_value == 0) {
       document.getElementById("ledIcon").style.display = "none";
+    }else{
+      document.getElementById("ledIcon").style.display = "inline";
     }
   })
   .catch((error) => {
