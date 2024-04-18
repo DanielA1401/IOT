@@ -9,7 +9,37 @@
 
 <div id="gaugeC" class="200x160px"></div>
 
+<button id="encenderBtn" style="display: none; background-color: green; color: white; padding: 10px 20px; font-size: 16px; margin: 10px;" onclick="encenderLed()">Encender LED</button>
+<button id="apagarBtn" style="display: none; background-color: red; color: white; padding: 10px 20px; font-size: 16px; margin: 10px;" onclick="apagarLed()">Apagar LED</button>
+
 <script>
+var accessToken = "821c27db0c85e71f09b26372b4aef9802fbf0a79";
+var deviceID = "0a10aced202194944a04ba38";
+var gradosC = "https://api.particle.io/v1/devices/" + deviceID + "/gradosC";
+
+function tempCallback(data, status) {
+  if (status == "success") {
+    var tempC = parseFloat(data.result);
+    tempC = tempC.toFixed(2);
+    gC.refresh(tempC);
+    setTimeout(getReadingC, 1000);
+    
+    if (tempC > 30) {
+      document.getElementById("encenderBtn").style.display = "inline-block";
+      document.getElementById("apagarBtn").style.display = "inline-block";
+    } else {
+      document.getElementById("encenderBtn").style.display = "none";
+      document.getElementById("apagarBtn").style.display = "none";
+    }
+  } else {
+    alert("There was a problem");
+  }
+}
+
+function getReadingC() {
+  $.get(gradosC, { access_token: accessToken }, tempCallback);
+}
+
 var gC = new JustGage({
   id: "gaugeC",
   value: 0,
@@ -18,40 +48,6 @@ var gC = new JustGage({
   title: "Temperatura (C)"
 });
 getReadingC();
-</script>
-
-<div id="gaugeH" class="200x160px"></div>
-
-<script>
-var gH = new JustGage({
-  id: "gaugeH",
-  value: 0,
-  min: 0,
-  max: 100,
-  title: "Humedad"
-});
-getReadingH();
-</script>
-
-<div id="gaugeF" class="200x160px"></div>
-
-<script>
-var gF = new JustGage({
-  id: "gaugeF",
-  value: 0,
-  min: 0,
-  max: 400,
-  title: "Temperatura (F)"
-});
-getReadingF();
-</script>
-
-<button style="background-color: green; color: white; padding: 10px 20px; font-size: 16px; margin: 10px;" onclick="encenderLed()">Encender LED</button>
-<button style="background-color: red; color: white; padding: 10px 20px; font-size: 16px; margin: 10px;" onclick="apagarLed()">Apagar LED</button>
-
-<script>
-var accessToken = "821c27db0c85e71f09b26372b4aef9802fbf0a79";
-var deviceID = "0a10aced202194944a04ba38";
 
 function encenderLed() {
   fetch("https://api.particle.io/v1/devices/" + deviceID + "/led", {
