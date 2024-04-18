@@ -22,15 +22,7 @@ function tempCallback(data, status) {
     var tempC = parseFloat(data.result);
     tempC = tempC.toFixed(2);
     gC.refresh(tempC);
-    setTimeout(getReadingC, 1000);
-    
-    if (tempC > 30) {
-      document.getElementById("encenderBtn").style.display = "inline-block";
-      document.getElementById("apagarBtn").style.display = "inline-block";
-    } else {
-      document.getElementById("encenderBtn").style.display = "none";
-      document.getElementById("apagarBtn").style.display = "none";
-    }
+    checkTemperature(tempC); // Llamar a la función de validación
   } else {
     alert("There was a problem");
   }
@@ -48,6 +40,16 @@ var gC = new JustGage({
   title: "Temperatura (C)"
 });
 getReadingC();
+
+function checkTemperature(temp) {
+  if (temp > 30) {
+    document.getElementById("encenderBtn").style.display = "inline-block";
+    document.getElementById("apagarBtn").style.display = "inline-block";
+  } else {
+    document.getElementById("encenderBtn").style.display = "none";
+    document.getElementById("apagarBtn").style.display = "none";
+  }
+}
 
 function encenderLed() {
   fetch("https://api.particle.io/v1/devices/" + deviceID + "/led", {
@@ -82,6 +84,9 @@ function apagarLed() {
     console.error("Error:", error);
   });
 }
+
+// Llamar a la función de validación cada segundo
+setInterval(getReadingC, 1000);
 </script>
 
 </body>
