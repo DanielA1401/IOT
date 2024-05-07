@@ -1,105 +1,82 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <title>Proyecto 1</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+    h1, h2, p {
+      margin-top: 20px;
+    }
+    #gaugeC {
+      margin: 0 auto;
+    }
+    .blue-button {
+      background-color: blue;
+      color: white;
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .red-button {
+      background-color: red;
+      color: white;
+    }
+  </style>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
   <script src="raphael-2.1.4.min.js"></script>
   <script src="justgage.js"></script>
 </head>
 <body>
 
+<h1 style="color: blue;">Proyecto 1</h1>
+<h2 style="color: green;">IOT</h2>
+<p style="color: red;">Jose Daniel Alonso Benites</p>
+
 <div id="gaugeC" class="200x160px"></div>
 
-<button id="encenderBtn" style="display: none; background-color: green; color: white; padding: 10px 20px; font-size: 16px; margin: 10px;" onclick="encenderLed()">Encender LED</button>
-<button id="apagarBtn" style="display: none; background-color: red; color: white; padding: 10px 20px; font-size: 16px; margin: 10px;" onclick="apagarLed()">Apagar LED</button>
+<button id="botonBtn" class="blue-button" onclick="presionarBoton()">Presionar Botón</button>
 
-<!-- Icono para indicar el LED encendido -->
-<img id="ledIcon" src="led_on.jpg" style="display: none; margin: 10px;">
+<!-- Icono para indicar el botón presionado -->
+<img id="botonIcon" src="boton_presionado.jpg" style="display: none; margin: 10px;">
 
 <script>
 var accessToken = "821c27db0c85e71f09b26372b4aef9802fbf0a79";
 var deviceID = "0a10aced202194944a04ba38";
-var gradosC = "https://api.particle.io/v1/devices/" + deviceID + "/gradosC";
 
-function tempCallback(data, status) {
-  if (status == "success") {
-    var tempC = parseFloat(data.result);
-    tempC = tempC.toFixed(2);
-    gC.refresh(tempC);
-    checkTemperature(tempC); // Llamar a la función de validación
-  } else {
-    alert("There was a problem");
-  }
-}
+function presionarBoton() {
+  // Cambiar el color del botón a rojo
+  document.getElementById("botonBtn").classList.add("red-button");
 
-function getReadingC() {
-  $.get(gradosC, { access_token: accessToken }, tempCallback);
-}
+  // Después de un segundo, volver a cambiar el color del botón a azul
+  setTimeout(function() {
+    document.getElementById("botonBtn").classList.remove("red-button");
+  }, 1000);
 
-var gC = new JustGage({
-  id: "gaugeC",
-  value: 0,
-  min: 0,
-  max: 400,
-  title: "Temperatura (C)"
-});
-getReadingC();
-
-function checkTemperature(temp) {
-  if (temp > 30) {
-    document.getElementById("encenderBtn").style.display = "inline-block";
-    document.getElementById("apagarBtn").style.display = "inline-block";
-  } else {
-    document.getElementById("encenderBtn").style.display = "none";
-    document.getElementById("apagarBtn").style.display = "none";
-  }
-}
-
-function encenderLed() {
-  fetch("https://api.particle.io/v1/devices/" + deviceID + "/led", {
+  // Llamar a la función para presionar el botón en el dispositivo
+  fetch("https://api.particle.io/v1/devices/" + deviceID + "/boton", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       Authorization: "Bearer 821c27db0c85e71f09b26372b4aef9802fbf0a79",
     },
-    body: "arg=on",
+    body: "arg=ok",
   })
   .then((response) => response.json())
   .then((data) => {
     console.log(data);
-    if (data.return_value == 1) {
-      document.getElementById("ledIcon").style.display = "inline";
-    }
   })
   .catch((error) => {
     console.error("Error:", error);
   });
 }
 
-function apagarLed() {
-  fetch("https://api.particle.io/v1/devices/" + deviceID + "/led", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: "Bearer 821c27db0c85e71f09b26372b4aef9802fbf0a79",
-    },
-    body: "arg=off",
-  })
-  .then((response) => response.json())
-  .then((data) => {
-    console.log(data);
-    if (data.return_value == 0) {
-      document.getElementById("ledIcon").style.display = "none";
-    }else{
-      document.getElementById("ledIcon").style.display = "inline";
-    }
-  })
-  .catch((error) => {
-    console.error("Error:", error);
-  });
-}
-
-// Llamar a la función de validación cada segundo
-setInterval(getReadingC, 1000);
 </script>
 
 </body>
